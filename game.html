@@ -1,0 +1,186 @@
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Snake Game</title>
+
+<div    style='width:500px;height:900px;border: solid 1px black;float:right;margin-right:200px'>
+        <h1><p>Your score:  <span id='demo'>0</span></p>
+            <br>
+            <p>Skill CD : <span id='skillcd'>10</span></p>
+            <br>
+            <br>
+            <br>
+            <p>Press K can add the speed of the snake</p>
+            
+        </h1>
+</div>
+<canvas id='gc' width='900' height='900'></canvas>
+<script>
+    window.onload=function(){
+        canv=document.getElementById('gc');
+        ctx=canv.getContext('2d');
+        document.addEventListener("keydown",keyPush);
+        var gameFames = setInterval(game,1000/speed);
+        console.log(gameFames);
+
+    }
+    const speed=15;
+
+
+    px=py=0;   // player x and  y
+    gs=tc=30;  //floor size 
+    ax=ay=15;  //apple x and y
+    xv=yv=0;  //x value and y value
+    trail=[];
+    tail=5;
+
+
+    score=0;
+    playerColor = 'lime';
+   
+
+
+
+
+    skillCD=10;
+    setInterval(function(){
+        skillCD--;
+        if(skillCD<=0){
+            skillCD=0;
+            document.getElementById('skillcd').innerHTML = 'The Skill is Ready!';
+        }
+        else{
+            document.getElementById('skillcd').innerHTML = skillCD;
+        }
+      
+    },1000);
+
+
+
+
+
+
+    function game(){
+       
+        px+=xv;          //cal player pos
+        py+=yv;
+
+        if(px<0){      //if px over the floor
+            px=tc-1;
+        }
+        if(py<0){      //if py over the floor
+            py=tc-1;
+        }
+        if(px>tc-1){      //if px over the floor
+            px=0;
+        }
+        if(py>tc-1){      //if py over the floor
+            py=0;
+        }
+
+
+
+        ctx.fillStyle = 'black';
+        ctx.fillRect(0,0,canv.width,canv.height);
+
+        //player 
+        player= ctx.fillStyle = playerColor;
+        
+        //ctx.fillRect(gs,gs,gs-2,gs-2);
+        for(var i =0;i<trail.length;i++ ){
+           // console.log(trail[i]);
+            ctx.fillRect(trail[i].x*gs,trail[i].y*gs,gs-2,gs-2);
+           // console.log('draw player');
+            if(trail[i].x==px && trail[i].y==py){
+                tail=5;
+              
+            }
+        }
+
+
+        trail.push({x:px,y:py});
+        while(trail.length>tail){
+            trail.shift();
+        }
+
+
+
+
+
+        // apple
+        if(ax==px && ay==py){
+            score++;
+            tail++;
+            ax=Math.floor(Math.random()*tc);
+            ay=Math.floor(Math.random()*tc);
+        }
+        
+        ctx.fillStyle = 'red';
+        ctx.fillRect(ax*gs,ay*tc,gs-2,gs-2);
+
+
+
+
+        //panel display
+        //score
+        document.getElementById('demo').innerHTML= score;
+
+        
+     
+
+    }
+    function keyPush(key){
+        switch(key.keyCode){
+            case 37:
+                xv=-1 ,yv=0;
+                break;
+            case 38:
+                xv=0 ,yv=-1;
+                break;
+            case 39:
+                xv=1 ,yv=0;
+                break;
+            case 40:
+                xv=0 ,yv=1;
+                break;    
+            
+
+            case 75:  //use skill
+            
+                if(skillCD ===0){
+                useSkill();
+        
+                }
+              
+                break;
+                
+
+        }
+    }
+
+
+    function useSkill(){
+
+    skillspeed=speed+200;
+        
+    skillTime =setInterval(game,1000/skillspeed);
+   
+    playerColor='gold';
+  
+    skillCD=10;
+    setTimeout(clearSkill,1000);
+           
+      
+    }
+
+    function clearSkill(){
+        playerColor='lime';
+        clearInterval(skillTime);
+             console.log(speed);
+        
+    }
+
+
+
+
+    
+    </script>
+
