@@ -8,7 +8,8 @@
             <br>
             <br>
             <br>
-            <p>Press K can add the speed of the snake</p>
+            <p>Press 'K' can add the speed of the snake</p>
+            <p>Press 'J' can Make the snake bigger</p>
             
         </h1>
 </div>
@@ -22,7 +23,7 @@
         console.log(gameFames);
 
     }
-    const speed=15;
+    const speed=16;
 
 
     px=py=0;   // player x and  y
@@ -36,7 +37,8 @@
     score=0;
     playerColor = 'lime';
    
-
+    playerSize=gs-2;
+    skillBigger=false;
 
 
 
@@ -60,9 +62,10 @@
 
     function game(){
        
+       
         px+=xv;          //cal player pos
         py+=yv;
-
+        console.log(px);
         if(px<0){      //if px over the floor
             px=tc-1;
         }
@@ -86,8 +89,27 @@
         
         //ctx.fillRect(gs,gs,gs-2,gs-2);
         for(var i =0;i<trail.length;i++ ){
-           // console.log(trail[i]);
-            ctx.fillRect(trail[i].x*gs,trail[i].y*gs,gs-2,gs-2);
+
+           //console.log(trail[i].x +','+trail[i].y);
+            ctx.fillRect(trail[i].x*gs,trail[i].y*gs,playerSize,playerSize);
+
+            if(skillBigger){
+                if(xv==1||xv==-1){
+                    ctx.fillRect(trail[i].x*gs,trail[i].y*gs+gs,playerSize,playerSize);
+                    
+                }
+                else{
+                  ctx.fillRect(trail[i].x*gs+gs,trail[i].y*gs,playerSize,playerSize);
+                }
+               
+               
+              
+              
+
+            }
+         
+            
+         
            // console.log('draw player');
             if(trail[i].x==px && trail[i].y==py){
                 tail=5;
@@ -103,14 +125,26 @@
 
 
 
-
+        spx=px+1;
+        spy=py+1;
 
         // apple
-        if(ax==px && ay==py){
+        if(ax==px && ay==py ){
             score++;
             tail++;
             ax=Math.floor(Math.random()*tc);
             ay=Math.floor(Math.random()*tc);
+        }
+
+        if(skillBigger){
+            console.log(skillBigger);      
+            if(ax==spx && ay==spy){
+                console.log('sb');                
+                score++;
+                tail++;
+                ax=Math.floor(Math.random()*tc);
+                ay=Math.floor(Math.random()*tc);
+            }
         }
         
         ctx.fillStyle = 'red';
@@ -122,7 +156,7 @@
         //panel display
         //score
         document.getElementById('demo').innerHTML= score;
-
+       
         
      
 
@@ -143,40 +177,68 @@
                 break;    
             
 
-            case 75:  //use skill
+            case 75:  //use skill_speed
             
                 if(skillCD ===0){
-                useSkill();
-        
-                }
+                    Skill_Speed();
+                    skillCD=10;
+                     }
               
                 break;
+
+
+            case 74:
+
                 
+                
+                if(skillCD ===0){
+                        Skill_Bigger();
+                        skillCD=10;
+                    }
+                
+              
+                break;
 
         }
     }
 
 
-    function useSkill(){
+    function Skill_Speed(){
 
-    skillspeed=speed+200;
-        
+    skillspeed=speed+200;    
     skillTime =setInterval(game,1000/skillspeed);
-   
     playerColor='gold';
-  
-    skillCD=10;
+   
     setTimeout(clearSkill,1000);
            
-      
+    }
+
+    function Skill_Bigger(){
+        skillBigger = true;
+        
+   
+
+
+         
+     
+
+        setTimeout(clearSkill,5000);
+        
+    
     }
 
     function clearSkill(){
+        skillBigger=false;
         playerColor='lime';
         clearInterval(skillTime);
              console.log(speed);
+             skillCD=10;
+        
         
     }
+
+
+
 
 
 
